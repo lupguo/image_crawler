@@ -13,13 +13,15 @@ go build github.com/tkstorm/image_crawler
 
 ## Usage
 
-```bash
-Usage of ./image_crawler:
+```
+$ ./cmd/image_crawler -h
+Usage of ./cmd/image_crawler:
+  -analyzed string
+    	url page analyzed method (node|regex) (default "regex")
   -d string
     	download image storage dirname (default "/tmp")
   -url string
-    	page url request by crawler (default "https://blog.golang.org/survey2018-results")
-
+    	page url request by crawler (default "http://tmall.com/")
 ```
 
 ## Example

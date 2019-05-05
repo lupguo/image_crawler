@@ -11,7 +11,7 @@ const (
 
 var (
 	testData = map[string]string{
-		"pageUrl":  "http://tmall.com/",
+		"pageUrl":  "https://blog.golang.org/survey2018-results",
 		"storage":  "/tmp",
 		"analyzed": AnalyzeByRegex,
 	}
