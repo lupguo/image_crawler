@@ -2,19 +2,39 @@
 package nodes
 
 import (
+	"github.com/tkstorm/image_crawler/internal/cmdline"
+	"github.com/tkstorm/image_crawler/internal/helper"
 	"golang.org/x/net/html"
+	"io/ioutil"
+	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 )
 
 type nodeVisitFunc func(*html.Node) (links []string)
 
-// ExtractImgUrls 提取页面中的图片URL
-func ExtractImgUrls(doc *html.Node) (urls []string) {
-	// 去重
-	seen := make(map[string]bool)
+// ExtractImgUrls 基于指定类型提取页面中的图片URL
+func ExtractImgUrls(resp *http.Response, analyzed string) (urls []string) {
+	switch analyzed {
+	case cmdline.AnalyzeByNode:
+		urls = analyzeByNode(resp)
+	case cmdline.AnalyzeByRegex:
+		urls = analyzeByRegex(resp)
+	}
 
-	// 先序遍历
+	return
+}
+
+// byHtmlNode 通过分析Html节点获取url信息
+func analyzeByNode(resp *http.Response) (urls []string) {
+	doc, err := html.Parse(resp.Body)
+	if err != nil {
+		helper.ErrorOut(err, "parse html doc")
+	}
+
+	// 去重 && 先序遍历
+	seen := make(map[string]bool)
 	links := forEachNode(doc, visitImgNode, nil)
 	for _, link := range links {
 		if _, ex := seen[link]; !ex && link != "" {
@@ -22,6 +42,21 @@ func ExtractImgUrls(doc *html.Node) (urls []string) {
 			urls = append(urls, link)
 		}
 	}
+	return
+}
+
+// analyzeByRegex 通过正则检测
+func analyzeByRegex(resp *http.Response) (urls []string) {
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		helper.ErrorOut(err, "analyzeByRegex ioutil read error")
+	}
+
+	re := regexp.MustCompile(`(?m)([^\s"]*\.(jpg|jpeg|png|gif|webp|svg))`)
+	for _, match := range re.FindAll(body, -1) {
+		urls = append(urls, string(match))
+	}
+
 	return
 }
 

@@ -9,7 +9,6 @@ import (
 	"github.com/tkstorm/image_crawler/internal/helper"
 	"github.com/tkstorm/image_crawler/internal/httpImg"
 	"github.com/tkstorm/image_crawler/internal/nodes"
-	"golang.org/x/net/html"
 	"net/http"
 )
 
@@ -27,12 +26,8 @@ func main() {
 	}
 	defer resp.Body.Close()
 
-	// parse html dom and extract download links
-	doc, err := html.Parse(resp.Body)
-	if err != nil {
-		helper.ErrorOut(err, "parse html doc")
-	}
-	links := nodes.ExtractImgUrls(doc)
+	// parse html dom by node and extract download links
+	links := nodes.ExtractImgUrls(resp, cmdline.Analyzed)
 
 	// goroutine download
 	fmt.Printf("total %d images need to be download...\n", len(links))
