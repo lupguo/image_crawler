@@ -46,3 +46,20 @@ ok https://blog.golang.org/survey2018/fig10.svg => /tmp/fig10.svg
 ok https://blog.golang.org/survey2018/fig26.svg => /tmp/fig26.svg
 ...
 ```
+
+## Bugs
+
+1. In the case of too much concurrency, the server will have connection rejection
+
+```
+...
+Get http://img.alicdn.com/tps/TB1Yn4KMXXXXXaJXVXXXXXXXXXX-400-398.jpg: dial tcp 184.31.46.100:80: i/o timeout
+ Get http://img.alicdn.com/tps/TB1kk0CMXXXXXXtapXXXXXXXXXX-400-398.jpg: dial tcp 184.31.46.100:80: i/o timeout
+ Get http://img.alicdn.com/tps/TB1EfiHLVXXXXbOXXXXXXXXXXXX-140-140.jpg: dial tcp 184.31.46.100:80: i/o timeout
+ Get http://img.alicdn.com/tps/TB1KTyFLVXXXXcRXXXXXXXXXXXX-140-140.jpg: dial tcp 184.31.46.100:80: i/o timeout
+ Get http://img.alicdn.com/tps/TB1S4g1JFXXXXXJXpXXXXXXXXXX-394-418.jpg: dial tcp 184.31.46.100:80: i/o timeout
+ Get http://img.alicdn.com/tps/TB17HxNMXXXXXXmXVXXXXXXXXXX-400-398.jpg: dial tcp 184.31.46.100:80: i/o timeout
+ ...
+```
+
+2. Currently, HTTP requests based on single IP are easy to be limited by the server
