@@ -14,14 +14,18 @@ go build github.com/tkstorm/image_crawler
 ## Usage
 
 ```
-$ ./cmd/image_crawler -h
-Usage of ./cmd/image_crawler:
+$ ./image_crawler -h
+Usage of ./image_crawler:
   -analyzed string
-    	url page analyzed method (node|regex) (default "regex")
+        url page analyzed method (node|regex) (default "regex")
+  -c int
+        the concurrence number of image crawler (default 20)
   -d string
-    	download image storage dirname (default "/tmp")
+        download image storage dirname (default "/tmp")
+  -sleep int
+        sleep time (in ms), reduce the rate of image request on the premise of concurrent request of image crawler
   -url string
-    	page url request by crawler (default "http://tmall.com/")
+        page url request by crawler (default "https://blog.golang.org/survey2018-results")
 ```
 
 ## Example
@@ -46,20 +50,3 @@ ok https://blog.golang.org/survey2018/fig10.svg => /tmp/fig10.svg
 ok https://blog.golang.org/survey2018/fig26.svg => /tmp/fig26.svg
 ...
 ```
-
-## Bugs
-
-1. In the case of too much concurrency, the server will have connection rejection
-
-```
-...
-Get http://img.alicdn.com/tps/TB1Yn4KMXXXXXaJXVXXXXXXXXXX-400-398.jpg: dial tcp 184.31.46.100:80: i/o timeout
- Get http://img.alicdn.com/tps/TB1kk0CMXXXXXXtapXXXXXXXXXX-400-398.jpg: dial tcp 184.31.46.100:80: i/o timeout
- Get http://img.alicdn.com/tps/TB1EfiHLVXXXXbOXXXXXXXXXXXX-140-140.jpg: dial tcp 184.31.46.100:80: i/o timeout
- Get http://img.alicdn.com/tps/TB1KTyFLVXXXXcRXXXXXXXXXXXX-140-140.jpg: dial tcp 184.31.46.100:80: i/o timeout
- Get http://img.alicdn.com/tps/TB1S4g1JFXXXXXJXpXXXXXXXXXX-394-418.jpg: dial tcp 184.31.46.100:80: i/o timeout
- Get http://img.alicdn.com/tps/TB17HxNMXXXXXXmXVXXXXXXXXXX-400-398.jpg: dial tcp 184.31.46.100:80: i/o timeout
- ...
-```
-
-2. Currently, HTTP requests based on single IP are easy to be limited by the server

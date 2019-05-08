@@ -52,7 +52,7 @@ func analyzeByRegex(resp *http.Response) (urls []string) {
 		helper.ErrorOut(err, "analyzeByRegex ioutil read error")
 	}
 
-	re := regexp.MustCompile(`(?m)([^\s"]*\.(jpg|jpeg|png|gif|webp|svg))`)
+	re := regexp.MustCompile(`(?i)(/[^"']*?\.(jpg|jpeg|png|gif|webp|svg))`)
 	for _, match := range re.FindAll(body, -1) {
 		urls = append(urls, string(match))
 	}
